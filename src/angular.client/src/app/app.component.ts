@@ -39,7 +39,7 @@ export class AppComponent {
   };
 
   send() {
-    this.hubConnection.send('SendMessageToCaller', this.input);
+    this.hubConnection.send('SendMessageToCaller', this.input, false);
     this.request = this.vcr.createComponent(RequestComponent);
     this.request.instance.message = this.input;
     this.input = '';
@@ -60,6 +60,23 @@ export class AppComponent {
 
       console.log(data);
     });
+
+
+    this.hubConnection.on('InitialMessage', (data) => {
+      const parsedMessage = JSON.parse(data) as InitialMessages;
+
+        if(parsedMessage.S === 'User')
+        {
+          this.request = this.vcr.createComponent(RequestComponent);
+          this.request.instance.message = parsedMessage.M;
+        }
+        else{
+          this.response = this.vcr.createComponent(ResponseComponent);
+          this.response.instance.message = parsedMessage.M;
+        }
+    });
+
+    
   };
 
   keydown(event: any) {
@@ -72,4 +89,10 @@ export class AppComponent {
 export interface MessagePayload {
   M: string | null;
   E: boolean;
+}
+
+
+export interface InitialMessages {
+  M: string | null;
+  S: string | null;
 }
