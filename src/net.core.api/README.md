@@ -6,7 +6,7 @@
   $ git clone https://github.com/parisxmas/ChatGPT.Async.git
 ```
 
-- Projenin ana dizinine gidin
+- Projenin ana dizinine gidin ve SQL klasörü içindeki seed.sql dosyasını veritabanınızda çalıştırın 
 
 - Eğer lokalinizde çalışan bir ElasticSearch ve Kibana varsa bu kısmı atlayabilirsiniz. Elastic Search farklı bir sunucuda çalışıyorsa ```net.core.api\net.core.api\appsettings.json``` dosyası altındaki ```ElasticConfiguration``` altındaki ```Uri``` değerini değiştirmelisiniz. ElasticSearch ve Kibana uygulamalarını Docker'da ayağa kaldırmak için aşağıdaki komutu çalıştırın:
 ```bash
