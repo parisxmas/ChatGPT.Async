@@ -5,7 +5,7 @@ using OpenAI.GPT3.Managers;
 using OpenAI.GPT3.ObjectModels.RequestModels;
 using OpenAI.GPT3.ObjectModels;
 using System.Text.Json;
-
+using System.Text.Json.Serialization;
 
 namespace net.core.api
 {
@@ -21,11 +21,12 @@ namespace net.core.api
         {
             await Clients.Caller.SendAsync("ReceiveMessage", JsonSerializer.Serialize(new MessagePayload()
             {
-                Error = error,
+                Error = error ? 1: 0,
                 Message = message
             }));
         }
        
+        // TODO : check concurrent request from same client, if so cancel current gpt request
         public async Task SendMessageToCaller(string message)
         {
             try
@@ -60,10 +61,12 @@ namespace net.core.api
         }
     }
 
-    class MessagePayload
+    public class MessagePayload
     {
+        [JsonPropertyName("M")]
         public string? Message { get; set; }
-        public bool Error { get; set; }
+        [JsonPropertyName("E")]
+        public int Error { get; set; }
        
     }
 }
