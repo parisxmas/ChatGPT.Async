@@ -51,7 +51,12 @@ export class AppComponent {
   public addChatGptListener = () => {
     this.hubConnection.on('ReceiveMessage', (data) => {
       const parsedMessage = JSON.parse(data) as MessagePayload;
-      this.response.instance!.message! += parsedMessage.M;
+      if (parsedMessage.M !== null) {
+        this.response.instance!.message! += parsedMessage.M;
+      } else {
+        this.response.instance!.cursorActive =
+          !this.response.instance!.cursorActive;
+      }
 
       console.log(data);
     });

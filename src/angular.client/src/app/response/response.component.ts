@@ -7,4 +7,5 @@ import { Component } from '@angular/core';
 })
 export class ResponseComponent {
   public message: string | null = null;
+  public cursorActive = false;
 }

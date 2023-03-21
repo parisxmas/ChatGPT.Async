@@ -31,17 +31,25 @@ namespace net.core.api
         {
             try
             {
-                var completionResult = this.openAIService.Completions.CreateCompletionAsStream(new CompletionCreateRequest()
+
+
+                var completionResult = this.openAIService.ChatCompletion.CreateCompletionAsStream(new ChatCompletionCreateRequest
                 {
-                    Prompt = message,
-                    MaxTokens = 2000
-                }, Models.TextDavinciV3);
+                    Messages = new List<ChatMessage>
+                        {
+                            new(StaticValues.ChatMessageRoles.System, message),
+        
+                        },
+                    Model = Models.ChatGpt3_5Turbo,
+                    MaxTokens = 150//optional
+                });
+
 
                 await foreach (var completion in completionResult)
                 {
                     if (completion.Successful)
                     {
-                        var resp = completion.Choices.FirstOrDefault()?.Text;
+                        var resp = completion.Choices.First().Message.Content;
                         await SendMessage(resp, false);                       
                     }
                     else
