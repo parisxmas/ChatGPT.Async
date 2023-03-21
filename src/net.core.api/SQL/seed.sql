@@ -39,6 +39,9 @@ CREATE TABLE [dbo].[Senders](
 ALTER TABLE [dbo].[Senders] ADD  CONSTRAINT [DF_Senders_Id]  DEFAULT (newid()) FOR [Id]
     GO
 
+    
+INSERT INTO [dbo].[Senders] (Name) VALUES ('User');
+INSERT INTO [dbo].[Senders] (Name) VALUES ('System');
 
 /****** Object:  StoredProcedure [dbo].[SP_GetChats]    Script Date: 3/21/2023 11:28:38 PM ******/
     SET ANSI_NULLS ON
