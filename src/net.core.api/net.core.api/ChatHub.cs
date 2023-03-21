@@ -42,6 +42,7 @@ namespace net.core.api
         public override async Task OnConnectedAsync()
         {
             var prevChats = _chatService.GetChats(new GetChatsRequest());
+            prevChats.Reverse();
             foreach (var prevChat in prevChats)
             {
                 await SendInitialMessage(prevChat.Text, prevChat.SenderId == UserId ? "User" : "System");
@@ -104,14 +105,12 @@ namespace net.core.api
                         MaxTokens = 150 //optional
                     });
 
-                if (!isPrev)
+
+                _chatService.InsertMessage(new InsertMessageRequest()
                 {
-                    _chatService.InsertMessage(new InsertMessageRequest()
-                    {
-                        SenderId = UserId.Value,
-                        Text = message
-                    });
-                }
+                    SenderId = UserId.Value,
+                    Text = message
+                });
 
 
                 await foreach (var completion in completionResult)

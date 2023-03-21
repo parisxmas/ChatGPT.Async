@@ -30,7 +30,7 @@ export class AppComponent {
 
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7093/chat')
+      .withUrl('https://localhost:44318/chat')
       .build();
     this.hubConnection
       .start()

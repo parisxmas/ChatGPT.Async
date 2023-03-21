@@ -67,7 +67,7 @@ END
 
 SELECT m.Text, m.SendDate, m.SenderId FROM Messages m
 WHERE  (@Search IS NULL OR m.Text LIKE '%Search%')
-ORDER BY m.SendDate OFFSET (@Page) * @PageSize ROWS FETCH NEXT @PageSize ROWS ONLY
+ORDER BY m.SendDate DESC OFFSET (@Page) * @PageSize ROWS FETCH NEXT @PageSize ROWS ONLY
 END
 
 
