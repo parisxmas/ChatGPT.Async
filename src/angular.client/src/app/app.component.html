@@ -1,23 +1,15 @@
 <div class="chat-container">
   <div class="chat-header">
-    <h2>Chat with ChatGPT</h2>
+    <h2>Chat asyncronous with ChatGPT</h2>
   </div>
-  <div class="chat-history">
-    <div class="chat-message from">
-      <p>Hello! How can I help you today?</p>
-      <span class="timestamp">12:30 PM</span>
-    </div>
-    <div class="chat-message to">
-      <p>Hi! Can you tell me the capital of Turkey?</p>
-      <span class="timestamp">12:31 PM</span>
-    </div>
-    <div class="chat-message from">
-      <p>Of course! The capital of Turkey is Ankara.</p>
-      <span class="timestamp">12:32 PM</span>
-    </div>
-  </div>
+  <div class="chat-history" #viewContainerRef></div>
   <div class="chat-input">
-    <input [(ngModel)]="input" type="text" placeholder="Type your message...">
+    <input
+      [(ngModel)]="input"
+      type="text"
+      placeholder="Type your message..."
+      (keydown)="keydown($event)"
+    />
     <button (click)="send()">Send</button>
   </div>
 </div>
