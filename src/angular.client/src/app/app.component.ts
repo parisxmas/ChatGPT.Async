@@ -39,7 +39,7 @@ export class AppComponent {
   };
 
   send() {
-    this.hubConnection.send('SendMessageToCaller', this.input, false);
+    this.hubConnection.send('SendMessageToCaller', this.input);
     this.request = this.vcr.createComponent(RequestComponent);
     this.request.instance.message = this.input;
     this.input = '';

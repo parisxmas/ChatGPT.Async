@@ -88,7 +88,7 @@ namespace net.core.api
         }
 
         // TODO : check concurrent request from same client, if so cancel current gpt request
-        public async Task SendMessageToCaller(string message, bool isPrev = false)
+        public async Task SendMessageToCaller(string message)
         {
             try
             {
