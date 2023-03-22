@@ -13,26 +13,32 @@ public class ChatService : BaseService, IChatService
     {
     }
 
-    public List<SPGetChatsResponse> GetChats(GetChatsRequest request)
+    public Task<List<SPGetChatsResponse>> GetChats(GetChatsRequest request)
     {
-        var chats = SPHelper.ExecuteSP<SPGetChats, List<SPGetChatsResponse>>(base.GetSPObject<SPGetChats>(),
-            new SPGetChatsRequest()
-            {
-                Search = request.Search,
-                Page = request.Page,
-                PageSize = request.PageSize
-            });
+        return Task.Run(() =>
+        {
+            var chats = SPHelper.ExecuteSP<SPGetChats, List<SPGetChatsResponse>>(base.GetSPObject<SPGetChats>(),
+                new SPGetChatsRequest()
+                {
+                    Search = request.Search,
+                    Page = request.Page,
+                    PageSize = request.PageSize
+                });
 
-        return chats;
+            return chats;
+        });
     }
 
-    public void InsertMessage(InsertMessageRequest request)
+    public Task InsertMessage(InsertMessageRequest request)
     {
-        SPHelper.ExecuteSP<SPInsertMessage, object>(base.GetSPObject<SPInsertMessage>(),
-            new SPInsertMessageRequest()
-            {
-                SenderId = request.SenderId,
-                Text = request.Text
-            });
+        return Task.Run(() =>
+        {
+            SPHelper.ExecuteSP<SPInsertMessage, object>(base.GetSPObject<SPInsertMessage>(),
+                new SPInsertMessageRequest()
+                {
+                    SenderId = request.SenderId,
+                    Text = request.Text
+                });
+        });
     }
 }

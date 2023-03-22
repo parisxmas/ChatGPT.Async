@@ -4,5 +4,5 @@ namespace net.core.business.Services.SendersServiceFolder;
 
 public interface ISenderService
 {
-    List<SPGetSendersResponse> GetSenders();
+    Task<List<SPGetSendersResponse>> GetSenders();
 }

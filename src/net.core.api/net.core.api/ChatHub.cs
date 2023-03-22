@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Text;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using OpenAI.GPT3.Interfaces;
 using OpenAI.GPT3.Managers;
@@ -22,8 +23,8 @@ namespace net.core.api
         private ISenderService _senderService;
         private ICacheService _cacheService;
 
-        private Guid? UserId;
-        private Guid? ChatGPTId;
+        private static Guid? UserId;
+        private static Guid? ChatGPTId;
 
         public ChatHub(IOpenAIService openAIService,
             IChatService chatService,
@@ -34,14 +35,16 @@ namespace net.core.api
             _chatService = chatService;
             _senderService = senderService;
             _cacheService = cacheService;
-
-            SetUserIds();
         }
 
 
         public override async Task OnConnectedAsync()
         {
-            var prevChats = _chatService.GetChats(new GetChatsRequest());
+            var userIds = await SetUserIds();
+            UserId = userIds.Item1;
+            ChatGPTId = userIds.Item2;
+            
+            var prevChats = await _chatService.GetChats(new GetChatsRequest());
             prevChats.Reverse();
             foreach (var prevChat in prevChats)
             {
@@ -69,23 +72,23 @@ namespace net.core.api
         }
 
 
-        private void SetUserIds()
+        private Task<(Guid?, Guid?)> SetUserIds()
         {
-            // Guid? UserId = null;
-            // Guid? ChatGPTId = null;
-
-            var users = _cacheService.Get<List<SPGetSendersResponse>>(GLOBALS.SENDERS_CACHE_KEY);
-
-            if (users == null || users.Count == 0)
+            return Task.Run(async () =>
             {
-                users = _senderService.GetSenders();
-                _cacheService.Set(GLOBALS.SENDERS_CACHE_KEY, users);
-            }
+                var users = _cacheService.Get<List<SPGetSendersResponse>>(GLOBALS.SENDERS_CACHE_KEY);
 
-            UserId = users.SingleOrDefault(_ => _.Name == GLOBALS.SENDERS_USER)?.Id.Value;
-            ChatGPTId = users.SingleOrDefault(_ => _.Name == GLOBALS.SENDERS_SYSTEM)?.Id.Value;
+                if (users == null || users.Count == 0)
+                {
+                    users = await _senderService.GetSenders();
+                    _cacheService.Set(GLOBALS.SENDERS_CACHE_KEY, users);
+                }
 
-            // return new(UserId, ChatGPTId);
+                var uId = users.SingleOrDefault(_ => _.Name == GLOBALS.SENDERS_USER)?.Id.Value;
+                var chatGptId = users.SingleOrDefault(_ => _.Name == GLOBALS.SENDERS_SYSTEM)?.Id.Value;
+
+                return (uId, chatGptId);
+            });
         }
 
         // TODO : check concurrent request from same client, if so cancel current gpt request
@@ -105,26 +108,38 @@ namespace net.core.api
                         MaxTokens = 150 //optional
                     });
 
-
-                _chatService.InsertMessage(new InsertMessageRequest()
+                await _chatService.InsertMessage(new InsertMessageRequest()
                 {
                     SenderId = UserId.Value,
                     Text = message
                 });
 
-
+                int nullCount = 0;
+                StringBuilder chatGptResponse = new StringBuilder();
+                
                 await foreach (var completion in completionResult)
                 {
                     if (completion.Successful)
                     {
                         var resp = completion.Choices.First().Message.Content;
-                        await SendMessage(resp, false);
-
-                        _chatService.InsertMessage(new InsertMessageRequest()
+                        if (String.IsNullOrEmpty(resp))
                         {
-                            SenderId = ChatGPTId.Value,
-                            Text = resp
-                        });
+                            nullCount += 1;
+                            if (nullCount == 2)
+                            {
+                                await _chatService.InsertMessage(new InsertMessageRequest()
+                                {
+                                    SenderId = ChatGPTId.Value,
+                                    Text = chatGptResponse.ToString()
+                                });
+                            }
+                        }
+                        else
+                        {
+                            chatGptResponse.Append(resp);
+                        }
+                        
+                        await SendMessage(resp, false);
                     }
                     else
                     {
@@ -137,7 +152,7 @@ namespace net.core.api
                         string errorMessage = $"{completion.Error.Code}: {completion.Error.Message}";
                         await SendMessage(errorMessage, true);
 
-                        _chatService.InsertMessage(new InsertMessageRequest()
+                        await _chatService.InsertMessage(new InsertMessageRequest()
                         {
                             SenderId = ChatGPTId.Value,
                             Text = errorMessage

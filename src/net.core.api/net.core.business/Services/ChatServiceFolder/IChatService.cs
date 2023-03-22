@@ -5,7 +5,7 @@ namespace net.core.business.Services.ChatServiceFolder;
 
 public interface IChatService
 {
-    List<SPGetChatsResponse> GetChats(GetChatsRequest request);
+    Task<List<SPGetChatsResponse>> GetChats(GetChatsRequest request);
 
-    void InsertMessage(InsertMessageRequest request);
+    Task InsertMessage(InsertMessageRequest request);
 }

@@ -12,10 +12,13 @@ public class SenderService : BaseService, ISenderService
     {
     }
 
-    public List<SPGetSendersResponse> GetSenders()
+    public Task<List<SPGetSendersResponse>> GetSenders()
     {
-        var senders = SPHelper.ExecuteSP<SPGetSenders, List<SPGetSendersResponse>>(base.GetSPObject<SPGetSenders>());
+        return Task.Run(() =>
+        {
+            var senders = SPHelper.ExecuteSP<SPGetSenders, List<SPGetSendersResponse>>(base.GetSPObject<SPGetSenders>());
 
-        return senders;
+            return senders;
+        });
     }
 }
