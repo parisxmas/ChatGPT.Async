@@ -41,7 +41,7 @@ namespace net.core.api
         
                         },
                     Model = Models.ChatGpt3_5Turbo,
-                    MaxTokens = 150//optional
+                    MaxTokens = 2000//optional
                 });
 
 

@@ -4,7 +4,7 @@ using OpenAI.GPT3.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenAIService(settings => { settings.ApiKey = "YOUR API KEY"; });
+builder.Services.AddOpenAIService(settings => { settings.ApiKey = "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"; });
 builder.Services.AddSignalR();
 builder.Services.AddCors(p => p.AddPolicy("cors", builder =>
 {
