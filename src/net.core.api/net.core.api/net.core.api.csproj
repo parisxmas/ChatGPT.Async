@@ -9,7 +9,21 @@
   <ItemGroup>
     <PackageReference Include="Betalgo.OpenAI.GPT3" Version="6.8.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.1-dev-00295" />
+    <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
+    <PackageReference Include="Serilog.Extensions" Version="3.3.1" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="5.1.0-dev-00123" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.1-dev-10338" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="4.0.0-dev-00486" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.1-dev-00910" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+    <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="9.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\net.core.business\net.core.business.csproj" />
+    <ProjectReference Include="..\net.core.data\net.core.data.csproj" />
   </ItemGroup>
 
 </Project>

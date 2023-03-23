@@ -30,7 +30,7 @@ export class AppComponent {
 
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7093/chat')
+      .withUrl('https://localhost:44318/chat')
       .build();
     this.hubConnection
       .start()
@@ -60,6 +60,23 @@ export class AppComponent {
 
       console.log(data);
     });
+
+
+    this.hubConnection.on('InitialMessage', (data) => {
+      const parsedMessage = JSON.parse(data) as InitialMessages;
+
+        if(parsedMessage.S === 'User')
+        {
+          this.request = this.vcr.createComponent(RequestComponent);
+          this.request.instance.message = parsedMessage.M;
+        }
+        else{
+          this.response = this.vcr.createComponent(ResponseComponent);
+          this.response.instance.message = parsedMessage.M;
+        }
+    });
+
+    
   };
 
   keydown(event: any) {
@@ -72,4 +89,10 @@ export class AppComponent {
 export interface MessagePayload {
   M: string | null;
   E: boolean;
+}
+
+
+export interface InitialMessages {
+  M: string | null;
+  S: string | null;
 }
