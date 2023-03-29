@@ -2,7 +2,7 @@
   <div class="chat-header">
     <h2>Chat asyncronous with ChatGPT</h2>
   </div>
-  <div class="chat-history">
+  <div class="chat-history" #history [scrollTop]="history.scrollHeight">
     <ng-template #viewContainerRef></ng-template>
   </div>
   <div class="chat-input">

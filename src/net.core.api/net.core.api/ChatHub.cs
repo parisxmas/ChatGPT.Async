@@ -96,17 +96,19 @@ namespace net.core.api
         {
             try
             {
+                Console.WriteLine(message);
+                await SendMessage("SetCaretActive", false);
                 // var allIds = SetUserIds();
                 var completionResult = this.openAIService.ChatCompletion.CreateCompletionAsStream(
                     new ChatCompletionCreateRequest
                     {
                         Messages = new List<ChatMessage>
                         {
-                            new(StaticValues.ChatMessageRoles.System, message),
+                            new(StaticValues.ChatMessageRoles.User, message),
                         },
                         Model = Models.ChatGpt3_5Turbo,
-                        MaxTokens = 150 //optional
-                    });
+                        MaxTokens = 2000
+                    })       ;
 
                 await _chatService.InsertMessage(new InsertMessageRequest()
                 {
@@ -119,9 +121,11 @@ namespace net.core.api
                 
                 await foreach (var completion in completionResult)
                 {
+                    
                     if (completion.Successful)
                     {
                         var resp = completion.Choices.First().Message.Content;
+                        Console.WriteLine(resp);
                         if (String.IsNullOrEmpty(resp))
                         {
                             nullCount += 1;
@@ -132,6 +136,7 @@ namespace net.core.api
                                     SenderId = ChatGPTId.Value,
                                     Text = chatGptResponse.ToString()
                                 });
+                                await SendMessage("SetCaretInactive", false);
                             }
                         }
                         else

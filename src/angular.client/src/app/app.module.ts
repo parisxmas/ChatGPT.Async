@@ -5,18 +5,17 @@ import { AppComponent } from './app.component';
 import { RequestComponent } from './request/request.component';
 import { ResponseComponent } from './response/response.component';
 import { ErrorComponent } from './error/error.component';
-
+import { SanitizeHtmlPipe } from './domSanitizer.pipe';
 @NgModule({
   declarations: [
     AppComponent,
     RequestComponent,
     ResponseComponent,
-    ErrorComponent
+    ErrorComponent,
+    SanitizeHtmlPipe,
   ],
-  imports: [
-    BrowserModule,FormsModule
-  ],
+  imports: [BrowserModule, FormsModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
